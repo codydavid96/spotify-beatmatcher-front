@@ -2,26 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+html {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  body {
+    @apply bg-[#191414] text-[#ffffff] tracking-wide;
+  }
+
+  h1 {
+    @apply text-4xl sm:text-5xl md:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl md:text-5xl;
+  }
+
+  li {
+    @apply cursor-pointer;
+  }
+
+  button {
+    @apply rounded-full bg-[#1db954] text-[#191414] hover:text-white ease-in duration-100;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.search-results {
+  height: 0;
+  visibility: hidden;
+  transition: height 1.5s ease-out, visibility 0.3s ease-out;
+  position: absolute;
+  top: calc(100% + 0.5rem); /* Adjust the distance from the search bar */
+  left: 0;
+  right: 0;
+  z-index: -1; /* Set initial z-index to push it behind the search bar */
 }
+
+.search-results.open {
+  height: auto;
+  visibility: visible;
+  z-index: 1; /* Bring it forward when open */
+}
+
+.search-results-item {
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.search-results-item:hover {
+  color: #1DB654; /* Change to your desired color */
+}
+
