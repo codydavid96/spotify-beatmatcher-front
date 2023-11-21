@@ -4,16 +4,29 @@ import React, { useState } from "react";
 import Image from "next/image";
 import spotifyLogoRgbGreen from "public/spotify-icons-logos/spotify-icons-logos/logos/01_RGB/02_PNG/spotifyLogoRgbGreen.png";
 
+interface SearchResult {
+  TrackName: string;
+  ArtistName: string;
+  // Add other properties if present in your search result objects
+}
+
 export default function Info() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<string[]>([]);
-
-  // Function to handle search
-  const handleSearch = () => {
-    // Perform your search logic here
-    // For demonstration purposes, let's assume the searchResults are hardcoded
-    const dummyResults = ["Result 1", "Result 2", "Result 3"];
-    setSearchResults(dummyResults);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/SpotifySearch/api/spotify/search?query=${searchTerm}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSearchResults(data);
+      } else {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,13 +74,15 @@ export default function Info() {
               <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
             </svg>
           </button>
-          <div className="mt-2">
+          <div className="mt-2 max-w-[25vw] overflow-hidden">
             {/* Display search results as a list */}
             {searchResults.length > 0 && (
-              <ul className="bg-white rounded shadow p-2">
+              <ul className="bg-white rounded shadow p-2 divide-y divide-gray-300">
                 {searchResults.map((result, index) => (
                   <li key={index} className="py-1">
-                    {result}
+                    <p className="hover:text-[#1db954]">
+                      {result.TrackName} - {result.ArtistName}
+                    </p>{" "}
                   </li>
                 ))}
               </ul>
